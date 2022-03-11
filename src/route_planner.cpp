@@ -3,10 +3,10 @@
 
 RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, float end_x, float end_y): m_Model(model) {
     // Convert inputs to percentage:
-    start_x *= 0.01;
-    start_y *= 0.01;
-    end_x *= 0.01;
-    end_y *= 0.01;
+    start_x /= 100;
+    start_y /= 100;
+    end_x /= 100;
+    end_y /= 100;
 
     // TODO 2: Use the m_Model.FindClosestNode method to find the closest nodes to the starting and ending coordinates.
     // Store the nodes you find in the RoutePlanner's start_node and end_node attributes.
@@ -21,7 +21,7 @@ RoutePlanner::RoutePlanner(RouteModel &model, float start_x, float start_y, floa
 // - Node objects have a distance method to determine the distance to another node.
 
 float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
-    return this->end_node->distance(*node);
+    return (*node).distance(*end_node);
 }
 
 
@@ -35,7 +35,7 @@ float RoutePlanner::CalculateHValue(RouteModel::Node const *node) {
 void RoutePlanner::AddNeighbors(RouteModel::Node *current_node) {
     (*current_node).FindNeighbors();
     current_node->visited = true;
-    for (auto* n : current_node->neighbors) {
+    for (auto n : current_node->neighbors) {
         n->parent = current_node;
         n->h_value = CalculateHValue(n);
         n->g_value = current_node->g_value + current_node->distance(*n);
